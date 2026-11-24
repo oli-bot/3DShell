@@ -1,0 +1,92 @@
+# Build artifacts
+build/
+*.3dsx
+*.cia
+*.elf
+*.smdh
+*.map
+*.bnr
+*.icn
+*.o
+
+# CIA build assets (banner + silent audio).  icon.png stays in the
+# tree so plain `make` produces a 3dsx with the proper icon.
+cia_assets/
+
+# Generated assets
+source/font_data.c
+source/font_data.h
+romfs/pinyin_dict.bin
+romfs/
+
+# Downloaded fonts (re-fetch via tools/fetch_fonts.sh)
+data/fonts/
+
+# Downloaded pinyin dict sources (re-fetch via tools/fetch_pinyin_dict.sh)
+data/pinyin_dict_src/
+
+# Host-side test build dir
+build/test_ime
+test_ime
+
+# Test screenshots & SD card snapshots (Mac extracted ._* metadata + key)
+3dssh/
+*.HEIC
+*.heic
+*.MOV
+*.mov
+IMG_*.jpg
+IMG_*.JPG
+IMG_*.png
+IMG_*.PNG
+截屏*.png
+截屏*.PNG
+docs/media/_ref*
+
+# Full-resolution demo video — uploaded as a Release asset, not in git
+docs/media/demo.mp4
+
+# libssh2 build outputs (M1)
+data/libssh2/
+.libssh2-built
+
+# Vendored 3DS portlibs that the Makefile links against (LIBDIRS prepends
+# build-deps/portlibs/3ds) — downloaded build inputs, not project source.
+build-deps/
+
+# Local config & secrets — never commit
+sd_template/3ds/3dssh/id_rsa
+sd_template/3ds/3dssh/config.ini
+*.key
+id_rsa*
+!sd_template/3ds/3dssh/id_rsa.example
+
+# Per-machine agent/runtime notes (machine-local, holds live state) — never commit
+AGENTS.md
+CLAUDE.md
+.workbuddy-ai/
+
+# OpenRouter / dssh-whisper credentials — never check into git.  install
+# scripts write them to ~/.config/dssh-whisper/ but a stray `git add .`
+# from a HOME-ish working tree could otherwise sweep them up.
+*api-key*
+*api_key*
+*openrouter*
+.config/dssh-whisper/
+
+# Editor / OS
+.vscode/
+.idea/
+*.swp
+.DS_Store
+.dsh-computer-use/
+
+# Scratch space for ad-hoc sprite/data diffing — never commit
+.tmp_diff/
+
+# WorkBuddy agent workspace (per-machine session memory)
+.workbuddy/
+
+# Python bytecode caches
+__pycache__/
+*.pyc

@@ -1,0 +1,84 @@
+# DSSH — custom colours (sdmc:/3ds/3dssh/theme.ini)
+#
+# Copy this file to /3ds/3dssh/theme.ini, then on the 3DS open
+#   Settings (bottom-right of the keyboard) -> 外观/Appearance -> 主题/Theme
+# and pick 自定义/Custom.  The app never writes this file — unlike
+# settings.ini it is read-only as far as DSSH is concerned, so hand-editing
+# it is safe and it is where the forty colours live without a palette
+# editor in the UI.
+#
+# Every key is optional.  A key you omit keeps the built-in default colour,
+# so a file with a single line works: change one role, keep the rest.
+# Unknown keys and unreadable values are ignored one at a time (the row
+# under 自定义 reports how many were rejected) — one typo never blanks the
+# whole palette.
+#
+# The one rule that matters: a '#' starts a comment ONLY as the first
+# non-blank character of a line.  Inline comments are NOT supported,
+# precisely so this form always works:
+#     bottom_bg = #1a1b26
+# (config.ini strips '#' anywhere; colour files are exactly where you will
+# paste that form out of a screenshot, so theme.ini does not.)
+#
+# Colours are RRGGBB or RRGGBBAA, case-insensitive.  The alpha byte is
+# ignored: DSSH forces the alpha the built-in themes use for each role
+# (the translucent roles key_special / hold_bg / cand_sel_bg stay
+# translucent; everything else is opaque).  This keeps the layered look
+# intact no matter what you paste in.
+#
+# After editing the file, re-read it by switching the theme away from
+# 自定义 and back (or restart the app) — the file is loaded once at startup.
+#
+# ─────────────────────────────────────────────────────────────────────
+# Below: every accepted key, with the default-theme value it replaces.
+# Everything is commented out; uncomment the lines you want to change.
+
+# ── Bottom screen: the 23 colour roles of the soft keyboard / UI ──
+# bottom_bg     = 181825    # clear colour behind everything (rounded corners)
+# panel_bg      = 1e1e2e    # raised strips: IME bar, settings/debug panels
+# key_border    = 1e1e2e    # keycap outline
+# key_body      = 313244    # normal keycap face
+# key_top       = 45475a    # 1px highlight on the keycap top edge
+# key_shadow    = 06060e    # 1px shadow under the keycap
+# key_special   = 45475a    # special-key face (⇧ ⌫ etc.)
+# key_space     = 6c7086    # space bar
+# key_accent    = 74c7ec    # page-switch key (123 / #+=)
+# key_press     = 89b4fa    # tap highlight
+# label         = cdd6f4    # keycap / candidate text
+# ink_dark      = 11111b    # text drawn ON the press highlight
+# hold_fg       = a6e3a1    # status text while a modifier is held
+# status_dim    = 45475a    # inactive status-row glyphs
+# hold_bg       = 89b4fa    # tint behind a held modifier (translucent)
+# slot_bg       = 313244    # small label chips in the status row
+# hint_fg       = 6c7086    # tertiary text: page hint, clock
+# pinyin_fg     = a6e3a1    # composed pinyin
+# pinyin_bad_fg = f38ba8    # pinyin with no candidates
+# cand_sel_bg   = 89b4fa    # selected candidate (translucent)
+# batt_warn     = e0af68    # battery digits below 20%
+# batt_chg      = 9ece6a    # battery digits while charging
+# batt_crit     = f7768e    # battery digits below 10%
+
+# ── Top screen: terminal background / foreground / 16-colour ANSI ──
+# term_bg       = 1a1b26    # defaults to bottom_bg when omitted
+# term_fg       = c0caf5    # default foreground text
+# ansi0         = 15161e    # black
+# ansi1         = f7768e    # red
+# ansi2         = 9ece6a    # green
+# ansi3         = e0af68    # yellow
+# ansi4         = 7aa2f7    # blue
+# ansi5         = bb9af7    # magenta
+# ansi6         = 7dcfc0    # cyan
+# ansi7         = a9b1d6    # white
+# ansi8         = 414868    # bright black
+# ansi9         = ff7a93    # bright red
+# ansi10        = b9f27c    # bright green
+# ansi11        = ff9e64    # bright yellow
+# ansi12        = 7da6ff    # bright blue
+# ansi13        = bb9af7    # bright magenta
+# ansi14        = 0db9d7    # bright cyan
+# ansi15        = c0caf5    # bright white
+
+# ── A minimal theme to try: uncomment and edit these three lines ──
+# bottom_bg = 1e1e2e
+# key_accent = f59e0b
+# term_bg = 181825

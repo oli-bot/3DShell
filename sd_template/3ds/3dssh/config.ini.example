@@ -1,0 +1,153 @@
+# DSSH — SSH connection config
+# Copy this to sd:/3ds/3dssh/config.ini and edit values for your server.
+
+# SSH server hostname or IP
+host = your-server.example.com
+
+# SSH port (default 22)
+port = 22
+
+# Username on the server
+user = ubuntu
+
+# Path to your RSA private key on the SD card.
+# Generate this on your PC with (-m PEM is REQUIRED — see note below):
+#   ssh-keygen -t rsa -b 4096 -m PEM -f ~/.ssh/id_rsa_3ds -C "3ds-ssh-client"
+# Then ssh-copy-id the public key to the server, and copy the private key here.
+#
+# IMPORTANT: 3DS mbedtls 2.28 only parses traditional PEM keys
+# (-----BEGIN RSA PRIVATE KEY-----).  Without -m PEM, modern ssh-keygen
+# emits OpenSSH format (-----BEGIN OPENSSH PRIVATE KEY-----) and the 3DS
+# will fail with "auth failed" at handshake.  Convert an existing key
+# in place with:  ssh-keygen -p -m PEM -f ~/.ssh/id_rsa_3ds
+key_path = sdmc:/3ds/3dssh/id_rsa
+
+# Passphrase for the key, or leave empty for an unencrypted key.
+# (Recommended: unencrypted, since the SD card is the only place the key lives.)
+passphrase =
+
+# Optional: automatically unlock the current SSH user's macOS login keychain.
+# Leave empty to disable it.
+# The password is sent only after the interactive PTY shows its unlock prompt;
+# it is never placed in a command-line argument or shell history.
+# Quote it if it contains # or leading/trailing spaces, for example:
+#   macos_keychain_password = "my # password"
+#
+# SECURITY WARNING: this stores your macOS login password in plaintext on the
+# removable SD card. Prefer a dedicated macOS account and keep the SD card safe.
+macos_keychain_password =
+
+# Optional native Tailscale transport. Setting an auth key enables Tailscale.
+# Later launches start automatically too — but only because the app writes
+# tailscale_autostart = 1 here once a registration succeeds, not because a
+# tailscale.state file happens to exist.  A state file left over from an older
+# build is data: treating its mere presence as a request used to make every
+# later launch dial Tailscale before the machine picker could be drawn.
+tailscale_auth_key =
+# 1 = bring Tailscale up at launch.  Normally left to the app, which sets this
+# itself after a successful registration — you do not have to set it by hand.
+# Set it to 0 to stop Tailscale coming up even though a node is registered.
+tailscale_autostart = 0
+
+# Optional values below use these defaults when omitted or left empty.
+tailscale_hostname = dssh-3ds
+tailscale_state = sdmc:/3ds/3dssh/tailscale.state
+tailscale_control_url = https://controlplane.tailscale.com
+
+# ── Multiple SSH machines (optional) ──
+# If you connect to more than one server, add numbered blocks.  Each machine uses
+# the suffix _N (0, 1, 2, … up to 7).  With TWO OR MORE configured, startup asks
+# which one to use before connecting — the machine picker, whose keys are in
+# KEYBINDING.md and which also comes back when you press SELECT after a
+# disconnect.  A single machine never sees that page.
+#
+#   name_0 = Home NAS
+#   host_0 = first.server.example.com
+#   port_0 = 22
+#   user_0 = ubuntu
+#   key_path_0 = sdmc:/3ds/3dssh/id_rsa_0
+#   passphrase_0 =
+#   macos_keychain_password_0 =
+#
+#   name_1 = 家里的群晖
+#   host_1 = second.server.example.com
+#   port_1 = 2222
+#   user_1 = pi
+#   key_path_1 = sdmc:/3ds/3dssh/id_rsa_1
+#   passphrase_1 = hunter2
+#   macos_keychain_password_1 =
+#
+# name_N is OPTIONAL and purely cosmetic: it is never sent to the server and
+# does not affect connecting.  A named machine takes TWO lines in the picker —
+# the name, then host (or host:port when the port is not 22).  An unnamed
+# machine stays on ONE line showing host or host:port, exactly as before, so
+# adding no name_N keys changes nothing.  The top screen shows the name of the
+# highlighted machine as 名称 / Name, and reads （未命名） / (unnamed) when that
+# machine has no name_N.
+#
+# Names are capped at 31 BYTES (longer values are silently truncated) and follow
+# the same quoting rule as every other value here: quote it if it contains # or
+# leading/trailing spaces, e.g. name_2 = "Rack #2 (Pi)".
+#
+# 31 bytes is 31 Latin letters but only 10 Chinese characters.  A longer name is
+# cut back to the last whole character — from the keyboard or from this file
+# alike — so an over-long name comes out shorter, never broken.
+#
+# You can also rename a machine on the device without touching this file:
+# press X on the machine picker page (see KEYBINDING.md).  The app rewrites the
+# matching name_N line in place and leaves every other byte alone.
+#
+# A name alone does NOT create a machine — the machine count comes from host_N,
+# so a block with only name_N (no host_N) is ignored.
+#
+# Keep the numbers CONTIGUOUS: host_0, host_1, host_2 …  The list stops at the
+# FIRST empty slot, so a gap cuts the machine off there.  With host_0 and host_2
+# but no host_1 you get ONE machine, not three — the alternative is the picker
+# offering the hole as a row with no address to resolve, which from the console
+# looks exactly like a network problem.  Nothing in this file is deleted or
+# rewritten, and the boot screen says how many machines were left out, but they
+# cannot be picked until you renumber.
+#
+# The unsuffixed fields above (name / host / port / user / key_path / passphrase /
+# macos_keychain_password) are STILL SUPPORTED: a single machine written without
+# a suffix is treated as machine 0, so existing configs keep working unchanged.
+#
+#   selected_machine = 0      # 0-based default highlight in the picker.  A value
+#                             # that is not a valid index here — negative, past 7,
+#                             # or past the number of machines configured — falls
+#                             # back to 0 rather than to the nearest machine.
+#
+# Each machine keeps its OWN project list: machine 0 uses settings.ini, machine N
+# uses settings.<N>.ini (auto-created on first settings change).  The Tailscale
+# fields above are shared across all machines.
+
+# ── UI settings (theme, mascot, sound, etc.) are NOT stored here.
+# They are auto-managed in sdmc:/3ds/3dssh/settings.ini (created on first
+# settings change; delete it to restore defaults).  No manual editing
+# needed, but the file is plain key=value like this one:
+#   mascot_mode = 1          # 0=off 1=crab 2=chick 3=phage 4=alien 5=niulai 6=dog
+#   dual_bottom_mode = 0     # 0=auto 1=squeeze 2=center 3=trim
+#   sticky_mode = 0
+#   key_sound_enabled = 1
+#   theme_mode = 0           # 0=dark 1=matrix 2=mono 3=solar 4=custom
+#                            # (shown as 主题; colours BOTH screens — the
+#                            #  key keeps its old name so existing
+#                            #  settings.ini files keep working;
+#                            #  4 reads sdmc:/3ds/3dssh/theme.ini, see
+#                            #  theme.ini.example next to this file)
+#   repeat_style = 1         # 0=slow 1=standard 2=fast (held-key repeat)
+#   ui_language = 0          # 0=中文 1=English 2=日本語 3=한국어 4=Deutsch 5=Français
+#   voice_max_sec = 30       # 15/30/60 (auto-clamped to ~63 s buffer)
+#   bottom_info_mode = 0     # 0=clock+battery 1=clock 2=hidden (3=legacy off→hidden)
+
+# ── Format markers: config_version / settings_version ──
+# Both files carry a version line that the APP writes and you should leave
+# alone.  It exists for one case: a card that a NEWER DSSH has been used with.
+# An older build then still reads the file — refusing to load it would lose the
+# machines on it — but will not write it, because it cannot know what keys it
+# would be flattening.  The boot screen says when this has happened.
+#
+#   config_version = 2
+#
+# A file with no such line (or a lower number) is simply older, and the next
+# save adds the line.  Deleting it does not reset anything.
